@@ -5,6 +5,8 @@
 //! profile README for the full architecture:
 //! https://github.com/sync-dot-mesh/.github
 
+mod change_detection;
+
 fn main() {
     println!("sync-mesh-core: scaffold only, nothing implemented yet.");
 }

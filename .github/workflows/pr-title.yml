@@ -1,0 +1,47 @@
+name: PR Title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  check:
+    name: conventional commit format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            perf
+            refactor
+            docs
+            style
+            test
+            build
+            ci
+            chore
+            revert
+          scopes: |
+            sync-engine
+            transport
+            persistence
+            ui
+            git-sync
+            packaging
+            deps
+            ci
+          # Scope is encouraged, not mandatory — a docs or chore commit
+          # that doesn't cleanly belong to one part of the system is fine
+          # without one.
+          requireScope: false
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject after "type(scope): " must not start with an
+            uppercase letter — keep it lowercase, imperative mood.
