@@ -36,6 +36,7 @@ jobs:
             git-sync
             packaging
             deps
+            ci
           # Scope is encouraged, not mandatory — a docs or chore commit
           # that doesn't cleanly belong to one part of the system is fine
           # without one.
