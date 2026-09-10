@@ -1,0 +1,19 @@
+[package]
+name = "sync-mesh-core"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+license = "MIT"
+
+[dependencies]
+# Intentionally empty — add whatever your actual project needs.
+
+[profile.dev]
+debug = 1
+split-debuginfo = "unpacked"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

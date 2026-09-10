@@ -1,0 +1,6 @@
+/target
+/.devenv/
+/.direnv/
+Cargo.lock
+*.swp
+.DS_Store

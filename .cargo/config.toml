@@ -1,0 +1,8 @@
+# mold is on PATH via the nix dev shell (Linux only). If it's ever
+# absent, remove this file or the target block — cargo falls back to
+# the platform default linker with no other changes needed.
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "link-arg=-fuse-ld=mold"]
+
+[target.aarch64-unknown-linux-gnu]
+rustflags = ["-C", "link-arg=-fuse-ld=mold"]

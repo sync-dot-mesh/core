@@ -1,0 +1,24 @@
+version: 2
+updates:
+  # Cargo dependencies — opens a PR when a crate has an update,
+  # including security advisories against Cargo.lock.
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      # Bundle routine patch/minor bumps into one PR instead of one
+      # PR per crate — much less review noise for a two-person team.
+      # Security updates are never grouped, they always get their own PR.
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Keep the CI workflow's own actions (checkout, rust-toolchain, ...)
+  # up to date too — these are dependencies as much as crates are.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
