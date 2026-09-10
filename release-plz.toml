@@ -1,0 +1,15 @@
+[workspace]
+changelog_config = "cliff.toml"
+
+# Update Cargo.lock too, not just Cargo.toml
+dependencies_update = false
+
+git_tag_enable = true
+git_release_enable = true
+
+# Off for now — sync-mesh-core is an internal FFI-consumed component,
+# not something meant to be `cargo add`-ed externally yet. Flip to
+# true (and add a CARGO_REGISTRY_TOKEN secret) whenever that changes.
+[[package]]
+name = "sync-mesh-core"
+publish = false

@@ -1,0 +1,47 @@
+[changelog]
+header = """
+# Changelog
+
+All notable changes to sync-mesh-core are documented here.
+"""
+body = """
+{% if version %}\
+## [{{ version | trim_start_matches(pat="v") }}]{% if release_timestamp %} - {{ release_timestamp | date(format="%Y-%m-%d") }}{% endif %}
+{% else %}\
+## [Unreleased]
+{% endif %}
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | upper_first }}
+{% for commit in commits -%}
+{% set uf = commit.footers | filter(attribute="token", value="User-Facing") -%}
+- {% if commit.scope %}**{{ commit.scope }}:** {% endif %}{% if uf | length > 0 %}{{ uf[0].value | replace(from="\n", to=" ") | replace(from="  ", to=" ") }}{% else %}{{ commit.message | upper_first }}{% endif %}{% if commit.breaking %} **[BREAKING]**{% endif %} ([{{ commit.id | truncate(length=7, end="") }}])
+{% endfor %}
+{% endfor %}\
+"""
+trim = true
+footer = ""
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+
+commit_parsers = [
+  { message = "^feat", group = "Features" },
+  { message = "^fix", group = "Bug Fixes" },
+  { message = "^perf", group = "Performance" },
+  { message = "^refactor", group = "Refactoring" },
+  { message = "^doc", group = "Documentation" },
+  { message = "^style", group = "Styling" },
+  { message = "^test", group = "Testing" },
+  { message = "^chore\\(deps\\)", group = "Dependencies" },
+  { message = "^build\\(deps\\)", group = "Dependencies" },
+  { message = "^chore", group = "Miscellaneous" },
+  { message = "^ci", group = "CI/CD" },
+  { message = "^build", group = "Build System" },
+  { message = "^revert", group = "Reverts" },
+]
+
+filter_commits = false
+tag_pattern = "v[0-9]*"
+sort_commits = "oldest"
