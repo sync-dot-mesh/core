@@ -5,6 +5,8 @@ use std::time::Duration;
 use tokio::process::{Child, Command};
 use tokio::time::Instant;
 
+use sync_mesh_handshake::HandshakeInfo;
+
 use super::{BackendError, ClusterBackend, NodeConfig};
 
 /// Spawns the compiled daemon binary as a real, separate OS process —
@@ -43,13 +45,14 @@ impl Drop for ProcessHandle {
     }
 }
 
-#[derive(serde::Deserialize)]
-struct HandshakeInfo {
-    grpc_port: u16,
-    #[allow(dead_code)] // reserved for later diagnostics, not read yet
-    pid: u32,
-}
-
+// This implementation never actually awaits anything in `spawn` —
+// spawning a local process is synchronous. The trait method is async
+// anyway, because the `docker`/`remote`/`android` backends this trait
+// exists for genuinely will await real I/O (a container API call, an
+// SSH connection, ADB). Changing the trait's signature to suit this
+// one implementation would defeat the point of a shared interface
+// across backends at all.
+#[allow(clippy::unused_async_trait_impl)]
 impl ClusterBackend for ProcessBackend {
     type Handle = ProcessHandle;
 

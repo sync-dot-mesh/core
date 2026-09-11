@@ -1,0 +1,10 @@
+[package]
+name = "sync-mesh-handshake"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "The local handshake-file format a spawned daemon writes to announce its assigned port. Used only for local process discovery (by test tooling today); real peers discover each other via mDNS, not this. Its own crate because it's a contract sync-mesh-daemon (writer) and sync-mesh-testkit (reader) depend on equally — belongs to neither of them specifically, same reasoning as sync-mesh-proto."
+
+[dependencies]
+serde.workspace = true

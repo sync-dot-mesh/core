@@ -8,6 +8,7 @@ description = "Test harness for spawning and driving real Sync.Mesh instances. D
 
 [dependencies]
 sync-mesh-proto = { path = "../proto" }
+sync-mesh-handshake = { path = "../handshake" }
 tokio.workspace = true
 tonic.workspace = true
 serde.workspace = true

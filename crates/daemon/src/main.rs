@@ -15,6 +15,7 @@ use clap::Parser;
 use tonic::transport::Server;
 
 use sync_mesh_engine::domain::NodeId;
+use sync_mesh_handshake::HandshakeInfo;
 use sync_mesh_proto::sync_service_server::SyncServiceServer;
 
 use data_dir::DataDir;
@@ -53,12 +54,8 @@ struct Args {
 /// rather than a stdout line: once real logging exists, daemon log
 /// output will share stdout, and a reader would have to distinguish
 /// "the handshake line" from "a log line that happens to look like
-/// one." A dedicated file has no such ambiguity.
-#[derive(serde::Serialize)]
-struct HandshakeInfo {
-    grpc_port: u16,
-    pid: u32,
-}
+/// one." A dedicated file has no such ambiguity. Shape defined once,
+/// in `sync-mesh-handshake`, and shared with whatever reads it.
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
