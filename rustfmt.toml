@@ -1,6 +1,9 @@
 edition = "2021"
 max_width = 100
 use_small_heuristics = "Max"
-imports_granularity = "Crate"
-group_imports = "StdExternalCrate"
 newline_style = "Unix"
+
+# imports_granularity and group_imports both require nightly rustfmt.
+# CI and the pinned dev toolchain are both stable — those two settings
+# would silently no-op with a warning on every run rather than do
+# anything, so they're left out rather than kept as decoration.

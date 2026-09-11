@@ -1,0 +1,28 @@
+[package]
+name = "sync-mesh-daemon"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Sync.Mesh daemon — the composition root. Wires the engine's ports to real adapters (gRPC, the system clock, the data-directory lock) and runs the process."
+
+[[bin]]
+name = "sync-mesh-daemon"
+path = "src/main.rs"
+
+[dependencies]
+sync-mesh-engine = { path = "../engine" }
+sync-mesh-proto = { path = "../proto" }
+tokio.workspace = true
+tokio-stream = "0.1"
+tonic.workspace = true
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+clap = { version = "4", features = ["derive"] }
+fs4 = { version = "0.9", features = ["sync"] }
+
+[dev-dependencies]
+sync-mesh-testkit = { path = "../testkit" }
+tempfile = "3"
