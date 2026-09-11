@@ -56,6 +56,17 @@ pub struct DataDir {
 }
 
 impl DataDir {
+    /// Creates the directory if it doesn't exist, then acquires an
+    /// exclusive, non-blocking lock on it.
+    ///
+    /// # Errors
+    /// Returns [`DataDirError::Create`] if the directory itself
+    /// couldn't be created (permissions, disk full, invalid path).
+    /// Returns [`DataDirError::OpenLockFile`] if the lock file inside
+    /// it couldn't be opened. Returns [`DataDirError::AlreadyLocked`]
+    /// if another instance already holds the lock — this is the
+    /// expected, correct outcome for a second instance pointed at the
+    /// same directory, not a failure condition to work around.
     pub fn acquire(path: impl AsRef<Path>) -> Result<Self, DataDirError> {
         let path = path.as_ref().to_path_buf();
 

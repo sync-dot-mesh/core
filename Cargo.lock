@@ -956,6 +956,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sync-mesh-engine",
+ "sync-mesh-handshake",
  "sync-mesh-proto",
  "sync-mesh-testkit",
  "tempfile",
@@ -975,6 +976,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "sync-mesh-handshake"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "sync-mesh-proto"
 version = "0.1.0"
 dependencies = [
@@ -989,6 +997,7 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
+ "sync-mesh-handshake",
  "sync-mesh-proto",
  "tempfile",
  "thiserror",

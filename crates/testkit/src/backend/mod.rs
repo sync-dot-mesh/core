@@ -18,16 +18,39 @@ pub trait ClusterBackend: Send + Sync {
     /// backend inspects this type's fields.
     type Handle: Send;
 
+    /// Starts one instance under this backend.
+    ///
+    /// # Errors
+    /// Returns an error if the instance could not be started at all —
+    /// for the process backend, this means the daemon binary itself
+    /// failed to launch (not found, not executable). It does not mean
+    /// the instance is reachable yet; use [`grpc_endpoint`](Self::grpc_endpoint)
+    /// to wait for that.
     fn spawn(
         &self,
         config: &NodeConfig,
     ) -> impl std::future::Future<Output = Result<Self::Handle, BackendError>> + Send;
 
+    /// Waits for and returns a connectable endpoint for an already-
+    /// spawned instance.
+    ///
+    /// # Errors
+    /// Returns [`BackendError::HandshakeTimeout`] if the instance never
+    /// becomes reachable within the backend's timeout — this is the
+    /// expected outcome for an instance that failed to start cleanly
+    /// (e.g. the negative lifecycle test), not necessarily a bug.
     fn grpc_endpoint(
         &self,
         handle: &Self::Handle,
     ) -> impl std::future::Future<Output = Result<String, BackendError>> + Send;
 
+    /// Stops an already-spawned instance.
+    ///
+    /// # Errors
+    /// Returns an error if the backend could not confirm the instance
+    /// stopped — for the process backend this is effectively
+    /// best-effort and rarely fails in practice, since killing a child
+    /// process is not expected to fail under normal conditions.
     fn stop(
         &self,
         handle: Self::Handle,

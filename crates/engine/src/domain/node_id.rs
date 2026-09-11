@@ -21,6 +21,7 @@ pub struct NodeId(Uuid);
 
 impl NodeId {
     /// Generates a fresh, random node identity.
+    #[must_use]
     pub fn new() -> Self {
         Self(Uuid::new_v4())
     }
@@ -28,10 +29,12 @@ impl NodeId {
     /// Wraps an existing UUID as a `NodeId` — for reconstructing an
     /// identity read back from storage, not for minting new ones (use
     /// [`NodeId::new`] for that).
+    #[must_use]
     pub fn from_uuid(id: Uuid) -> Self {
         Self(id)
     }
 
+    #[must_use]
     pub fn as_uuid(&self) -> Uuid {
         self.0
     }

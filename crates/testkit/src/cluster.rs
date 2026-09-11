@@ -22,18 +22,24 @@ pub struct TestCluster<B: ClusterBackend> {
     backend: B,
     run_id: Uuid,
     nodes: HashMap<String, B::Handle>,
-    // Held only so the directory and everything under it is removed
-    // when the cluster is dropped — never read directly.
-    _temp_root: tempfile::TempDir,
+    // Every spawned node's data directory lives under here. Also
+    // removes everything on Drop, but that's a secondary benefit, not
+    // the reason it's held — data_dir_for() reads it directly, so it
+    // is not the "held only for Drop, never read" kind of field an
+    // underscore prefix would signal.
+    temp_root: tempfile::TempDir,
 }
 
 impl<B: ClusterBackend> TestCluster<B> {
+    /// # Errors
+    /// Returns an error if the temporary directory backing this
+    /// cluster's data directories cannot be created.
     pub fn new(backend: B) -> std::io::Result<Self> {
         Ok(Self {
             backend,
             run_id: Uuid::new_v4(),
             nodes: HashMap::new(),
-            _temp_root: tempfile::tempdir()?,
+            temp_root: tempfile::tempdir()?,
         })
     }
 
@@ -46,12 +52,17 @@ impl<B: ClusterBackend> TestCluster<B> {
     }
 
     fn data_dir_for(&self, name: &str) -> PathBuf {
-        self._temp_root.path().join(name)
+        self.temp_root.path().join(name)
     }
 
     /// Spawns one node under this cluster's isolation scope. `name` is
     /// only a local label for later lookups (`status_client`,
     /// `stop_node`) — it is never sent anywhere.
+    ///
+    /// # Errors
+    /// Returns whatever [`ClusterBackend::spawn`] returns for the
+    /// backend this cluster was constructed with — e.g. the process
+    /// backend's error if the daemon binary fails to launch at all.
     pub async fn spawn_node(&mut self, name: impl Into<String>) -> Result<(), BackendError> {
         let name = name.into();
         let config = NodeConfig { data_dir: self.data_dir_for(&name), test_run_id: self.run_id };
@@ -65,6 +76,12 @@ impl<B: ClusterBackend> TestCluster<B> {
     /// Waits for the instance to actually become reachable (via the
     /// backend's handshake) rather than assuming it's ready the
     /// instant `spawn_node` returns.
+    ///
+    /// # Errors
+    /// Returns an error if no node with this name was ever spawned in
+    /// this cluster, if the backend's reachability check times out
+    /// (the instance never became reachable), or if the gRPC channel
+    /// itself fails to connect once an endpoint is known.
     pub async fn status_client(
         &self,
         name: &str,
@@ -81,6 +98,12 @@ impl<B: ClusterBackend> TestCluster<B> {
     /// Explicitly stops one node without waiting for the whole
     /// cluster to be dropped — needed by tests that check behaviour
     /// *during* a partial cluster (e.g. the disruption test, later).
+    ///
+    /// # Errors
+    /// Returns whatever [`ClusterBackend::stop`] returns for the
+    /// backend this cluster was constructed with. Stopping a name that
+    /// was never spawned (or already stopped) is not an error — it's
+    /// simply a no-op.
     pub async fn stop_node(&mut self, name: &str) -> Result<(), BackendError> {
         if let Some(handle) = self.nodes.remove(name) {
             self.backend.stop(handle).await?;
