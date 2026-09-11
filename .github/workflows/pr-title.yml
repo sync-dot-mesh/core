@@ -42,3 +42,7 @@ jobs:
           # that doesn't cleanly belong to one part of the system is fine
           # without one.
           requireScope: false
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject after "type(scope): " must not start with an
+            uppercase letter — keep it lowercase, imperative mood.
