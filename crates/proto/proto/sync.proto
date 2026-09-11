@@ -1,0 +1,26 @@
+syntax = "proto3";
+package syncmesh.v1;
+
+// GetStatus is the only RPC implemented so far. The full eventual
+// contract (Pair, GetSnapshot, NotifyChange, PushFile, PushDelta,
+// WatchChanges, OffloadDiff — see ARCHITECTURE.md) gets added
+// alongside the engine feature it actually drives, not speculatively
+// ahead of the code that would use it.
+service SyncService {
+  rpc GetStatus (GetStatusRequest) returns (GetStatusResponse);
+}
+
+message GetStatusRequest {}
+
+message GetStatusResponse {
+  string node_id = 1;
+  HealthState health = 2;
+  uint64 uptime_seconds = 3;
+}
+
+enum HealthState {
+  HEALTH_STATE_UNSPECIFIED = 0;
+  HEALTH_STATE_STARTING = 1;
+  HEALTH_STATE_HEALTHY = 2;
+  HEALTH_STATE_SHUTTING_DOWN = 3;
+}

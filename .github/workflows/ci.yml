@@ -22,7 +22,9 @@ jobs:
       # .cargo/config.toml pins the mold linker (present in the local
       # Nix dev shell, not on this runner by default) — install it
       # rather than diverge from what local builds actually use.
-      - run: sudo apt-get update && sudo apt-get install -y mold
+      # protoc is needed by sync-mesh-proto's build.rs to compile
+      # sync.proto — also not present on this runner by default.
+      - run: sudo apt-get update && sudo apt-get install -y mold protobuf-compiler
       - run: cargo test --all-features --verbose
 
   clippy:
@@ -34,7 +36,7 @@ jobs:
         with:
           components: clippy
       - uses: Swatinem/rust-cache@v2
-      - run: sudo apt-get update && sudo apt-get install -y mold
+      - run: sudo apt-get update && sudo apt-get install -y mold protobuf-compiler
       # -D warnings: any clippy warning fails the build, not just errors.
       # Cheaper to fix one lint now than let them accumulate.
       - run: cargo clippy --all-targets --all-features -- -D warnings

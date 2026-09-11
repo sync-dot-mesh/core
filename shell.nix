@@ -24,6 +24,7 @@ let
     pkg-config
     openssl
     lldb
+    protobuf   # provides protoc — required to build sync-mesh-proto's .proto file
   ]
   ++ lib.optionals stdenv.isLinux [ mold ];
 

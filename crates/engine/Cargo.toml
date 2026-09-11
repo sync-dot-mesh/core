@@ -1,0 +1,13 @@
+[package]
+name = "sync-mesh-engine"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Sync.Mesh sync engine core — domain types, ports, pure algorithms. No I/O, no gRPC, no filesystem access."
+
+[dependencies]
+uuid.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]

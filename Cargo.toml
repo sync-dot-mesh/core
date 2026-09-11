@@ -1,12 +1,27 @@
-[package]
-name = "sync-mesh-core"
+[workspace]
+resolver = "2"
+members = [
+    "crates/engine",
+    "crates/proto",
+    "crates/daemon",
+    "crates/testkit",
+]
+
+# Shared metadata — inherited by member crates via `.workspace = true`
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.75"
-license = "MIT"
+license = "AGPL-3.0-or-later"
 
-[dependencies]
-# Intentionally empty — add whatever your actual project needs.
+[workspace.dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal", "net", "time", "fs", "process"] }
+tonic = "0.12"
+prost = "0.13"
+thiserror = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["v4"] }
 
 [profile.dev]
 debug = 1

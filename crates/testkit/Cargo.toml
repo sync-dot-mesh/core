@@ -1,0 +1,17 @@
+[package]
+name = "sync-mesh-testkit"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Test harness for spawning and driving real Sync.Mesh instances. Dev-dependency only, never shipped. The ClusterBackend trait is the seam for later tiers (Docker, remote VPS, Android) — only the local-process backend exists so far."
+
+[dependencies]
+sync-mesh-proto = { path = "../proto" }
+tokio.workspace = true
+tonic.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+thiserror.workspace = true
+tempfile = "3"
