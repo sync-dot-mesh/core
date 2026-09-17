@@ -22,7 +22,7 @@ serde.workspace = true
 serde_json.workspace = true
 uuid.workspace = true
 clap = { version = "4", features = ["derive"] }
-fs4 = { version = "0.9", features = ["sync"] }
+fs4 = { version = "1.1", features = ["sync"] }
 
 [dev-dependencies]
 sync-mesh-testkit = { path = "../testkit" }
